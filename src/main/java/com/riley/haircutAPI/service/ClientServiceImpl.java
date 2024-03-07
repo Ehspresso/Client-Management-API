@@ -22,4 +22,32 @@ public class ClientServiceImpl implements ClientService{
     public Client save(Client client) {
         return clientRepository.save(client);
     }
+
+    @Override
+    public Client fetchClient(Long id) {
+        return clientRepository.findById(id).get();
+    }
+
+    @Override
+    public void deleteClient(Long id) {
+        clientRepository.deleteById(id);
+    }
+
+    @Override
+    public Client updateClient(Client client, Long id) {
+        Client newClient = clientRepository.findById(id).get();
+
+        newClient.setEmail(client.getEmail());
+        newClient.setMobile(client.getMobile());
+        newClient.setFirstName(client.getFirstName());
+        newClient.setLastName(client.getLastName());
+        newClient.setPassword(client.getPassword());
+
+        return clientRepository.save(newClient);
+    }
+
+    @Override
+    public Client fetchClientByEmail(String email) {
+        return clientRepository.findClientByEmail(email);
+    }
 }

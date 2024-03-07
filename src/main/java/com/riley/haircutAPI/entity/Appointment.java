@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -17,23 +18,26 @@ public class Appointment {
 
     @Id
     @SequenceGenerator(
-            name = "courseId_sequence",
-            sequenceName = "courseId_sequence",
+            name = "appointment_sequence",
+            sequenceName = "appointment_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "courseId_sequence"
+            generator = "appointment_sequence"
     )
     private Long id;
-    private Date date;
+
+    @DateTimeFormat(pattern = "mm/dd/yyyy")
+    private LocalDate date;
     private Integer type;
     private Integer price;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(
             name = "client_id",
-            referencedColumnName = "clientId"
+            referencedColumnName = "clientId",
+            nullable = false
     )
     private Client client;
 }
