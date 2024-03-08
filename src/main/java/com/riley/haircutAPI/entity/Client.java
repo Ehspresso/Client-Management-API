@@ -1,5 +1,8 @@
 package com.riley.haircutAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +35,6 @@ public class Client {
     private String password;
 
     @OneToOne(mappedBy = "client")
+    @JsonManagedReference
     private Appointment appointment;
 }
