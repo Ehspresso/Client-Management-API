@@ -34,14 +34,15 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public Client updateClient(Client client, Long id) {
-        Client newClient = clientRepository.findById(id).get();
+    //Requires error checking, ie. what to do if findById returns a null response because there is no client with id
+    public Client updateClient(Client newClient, Long id) {
+        Client client = clientRepository.findById(id).get();
 
-        newClient.setEmail(client.getEmail());
-        newClient.setMobile(client.getMobile());
-        newClient.setFirstName(client.getFirstName());
-        newClient.setLastName(client.getLastName());
-        newClient.setPassword(client.getPassword());
+        client.setEmail(newClient.getEmail());
+        client.setMobile(newClient.getMobile());
+        client.setFirstName(newClient.getFirstName());
+        client.setLastName(newClient.getLastName());
+        client.setPassword(newClient.getPassword());
 
         return clientRepository.save(newClient);
     }
