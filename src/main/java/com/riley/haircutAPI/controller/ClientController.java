@@ -1,5 +1,6 @@
 package com.riley.haircutAPI.controller;
 
+import com.riley.haircutAPI.ResponseObjects.ClientResponse;
 import com.riley.haircutAPI.entity.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,12 @@ public class ClientController {
     private final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
 
     @GetMapping("/clients")
-    public ResponseEntity<List<Client>> fetchAllClients() {
+    public ResponseEntity<ClientResponse> fetchAllClients(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    ) {
 
-        return ResponseEntity.ok(clientService.fetchAllClients());
+        return new ResponseEntity<>(clientService.fetchAllClients(pageNo, pageSize), HttpStatus.OK);
     }
 
     @PostMapping("/clients")

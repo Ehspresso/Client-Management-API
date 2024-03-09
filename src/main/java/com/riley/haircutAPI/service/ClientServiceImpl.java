@@ -1,10 +1,13 @@
 package com.riley.haircutAPI.service;
 
+import com.riley.haircutAPI.ResponseObjects.ClientResponse;
 import com.riley.haircutAPI.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.riley.haircutAPI.repository.ClientRepository;
-
 import java.util.List;
 
 @Service
@@ -14,8 +17,20 @@ public class ClientServiceImpl implements ClientService{
     private ClientRepository clientRepository;
 
     @Override
-    public List<Client> fetchAllClients() {
-        return clientRepository.findAll();
+    public ClientResponse fetchAllClients(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Client> clients = clientRepository.findAll(pageable);
+
+        ClientResponse response = new ClientResponse();
+        response.setContent(clients.getContent());
+        response.setPageNo(clients.getNumber());
+        response.setPageSize(clients.getSize());
+        response.setTotalElements(clients.getTotalElements());
+        response.setTotalPages(clients.getTotalPages());
+        response.setLast(clients.isLast());
+
+        return response;
     }
 
     @Override
