@@ -1,6 +1,7 @@
 package com.riley.haircutAPI.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,6 @@ public class Appointment {
             referencedColumnName = "clientId",
             nullable = false
     )
-    @JsonBackReference
+    @JsonManagedReference
     private Client client;
 }

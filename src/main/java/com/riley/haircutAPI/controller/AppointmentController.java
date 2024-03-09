@@ -3,6 +3,7 @@ package com.riley.haircutAPI.controller;
 import com.riley.haircutAPI.entity.Appointment;
 import com.riley.haircutAPI.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @GetMapping("/appointments")
-    public List<Appointment> fetchAllAppointments() {
-        return appointmentService.fetchAllAppointments();
+    public ResponseEntity<List<Appointment>> fetchAllAppointments() {
+        return ResponseEntity.ok(appointmentService.fetchAllAppointments());
     }
 
     @PostMapping("/appointments")

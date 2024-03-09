@@ -1,5 +1,6 @@
 package com.riley.haircutAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -35,6 +36,6 @@ public class Client {
     private String password;
 
     @OneToOne(mappedBy = "client")
-    @JsonManagedReference
+    @JsonBackReference
     private Appointment appointment;
 }
