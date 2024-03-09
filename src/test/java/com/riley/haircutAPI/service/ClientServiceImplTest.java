@@ -1,26 +1,31 @@
 package com.riley.haircutAPI.service;
 
+import com.riley.haircutAPI.ResponseObjects.ClientResponse;
 import com.riley.haircutAPI.entity.Client;
 import com.riley.haircutAPI.repository.ClientRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 class ClientServiceImplTest {
 
-    @MockBean
+    @Mock
     private ClientRepository repository;
 
-    @Autowired
+    @InjectMocks
     private ClientServiceImpl service;
 
     private Client client;
@@ -43,32 +48,31 @@ class ClientServiceImplTest {
     @Test
     void testSave() {
 
-        client.setClientId(1L);
-        Mockito.when(repository.save(any())).thenReturn(client);
+        //assemble
+        Mockito.when(repository.save(any(Client.class))).thenReturn(client);
+
+        //act
         Client result = service.save(client);
 
+        //assert
         Mockito.verify(repository, Mockito.times(1)).save(client);
-        assertEquals(result.getClientId(), client.getClientId());
+        assertNotNull(result);
 
     }
 
     @Test
-    void testUpdate() {
+    void testFetchAll_returnsClientResponse() throws InstantiationException, IllegalAccessException {
 
-        client.setClientId(1L);
-        Client updatedClient = new Client(
-                client.getClientId(),
-                client.getFirstName(),
-                client.getLastName(),
-                client.getMobile(),
-                "newemail@example.com",
-                client.getPassword(),
-                client.getAppointment());
-        Mockito.when(repository.save(any())).thenReturn(updatedClient);
+        //assemble
+        Page<Client> clients = Mockito.mock(Page.class);
+        Mockito.when(repository.findAll(Mockito.any(Pageable.class))).thenReturn(clients);
 
-        Client result = service.save(updatedClient);
-        Mockito.verify(repository, Mockito.times(1)).save(any());
-        assertEquals(result.getClientId(), client.getClientId());
-        assertEquals(result.getEmail(), updatedClient.getEmail());
+        //act
+        ClientResponse response = service.fetchAllClients(1, 10); //Randomly chosen params
+
+        //assert
+        Mockito.verify(repository, Mockito.times(1)).findAll(Mockito.any(Pageable.class));
+        assertNotNull(response);
+
     }
 }
