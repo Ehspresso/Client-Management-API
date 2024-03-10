@@ -1,12 +1,17 @@
 package com.riley.haircutAPI.ResponseObjects;
 
 import com.riley.haircutAPI.entity.Client;
-import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ClientResponse  {
 
     private List<Client> content;

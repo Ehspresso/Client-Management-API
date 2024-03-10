@@ -1,8 +1,11 @@
 package com.riley.haircutAPI.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.riley.haircutAPI.ResponseObjects.ClientResponse;
 import com.riley.haircutAPI.entity.Client;
 import com.riley.haircutAPI.service.ClientService;
+import org.assertj.core.util.Arrays;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,6 +16,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -29,7 +36,9 @@ class ClientControllerTest {
     @MockBean
     ClientService service;
 
+    @Autowired
     ObjectMapper objectMapper;
+
     Client client;
 
     @BeforeEach
@@ -39,57 +48,49 @@ class ClientControllerTest {
                 .mobile(123456789)
                 .firstName("riley")
                 .lastName("mckinley")
-                .clientId(1L)
                 .build();
-
-        objectMapper = new ObjectMapper();
     }
 
     @Test
-    void saveClient() throws Exception {
+    void testSaveClient_returnsClient() throws Exception {
 
-        Client requestClient = Client.builder()
-                .email("riley@example.com")
-                .mobile(123456789)
-                .firstName("riley")
-                .lastName("mckinley")
-                .build();
-
-        Mockito.when(service.save(requestClient))
+        //assemble
+        Mockito.when(service.save(client))
                 .thenReturn(client);
 
-        mockMvc.perform(post("/clients")
+        //act
+        ResultActions response = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestClient)))
-                .andExpect(jsonPath("$.clientId").value(1L));
+                .content(objectMapper.writeValueAsString(client)));
+
+        //assert
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(client.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.mobile", CoreMatchers.is(client.getMobile())));
     }
 
     @Test
-    void updateClient() throws Exception {
+    void testFetchAll_ReturnsListOfClients() throws Exception {
 
-        Client requestClient = Client.builder()
-                .email("mckinley@example.com")
-                .mobile(123456789)
-                .firstName("riley")
-                .lastName("mckinley")
+        //assemble
+        List<Client> clients = new ArrayList<Client>();
+        clients.add(client);
+        ClientResponse clientResponse = ClientResponse.builder() //Must mock ClientResponse because Service layer uses it
+                .last(true)
+                .pageNo(1) //randomly chosen
+                .pageSize(2) //randomly chosen
+                .content(clients)
                 .build();
+        when(service.fetchAllClients(1, 2)).thenReturn(clientResponse); //Must match ClientResponse because Service layer is mocked
 
-        Client responseClient = Client.builder()
-                .email("mckinley@example.com")
-                .mobile(123456789)
-                .firstName("riley")
-                .lastName("mckinley")
-                .clientId(client.getClientId())
-                .build();
+        //act
+        ResultActions response = mockMvc.perform(get("/clients")
+                .param("pageNo", "1")
+                .param("pageSize", "2")
+                .contentType(MediaType.APPLICATION_JSON));
 
-        System.out.println(responseClient.toString());
-
-        Mockito.when(service.updateClient(requestClient, client.getClientId()))
-                .thenReturn(responseClient);
-
-        mockMvc.perform(put("/clients/{id}", client.getClientId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestClient)))
-                .andExpect(jsonPath("$.clientId").value(client.getClientId()));
+        //assert
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].email", CoreMatchers.is(client.getEmail())));
     }
 }
