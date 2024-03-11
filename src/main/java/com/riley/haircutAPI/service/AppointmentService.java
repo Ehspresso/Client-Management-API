@@ -12,4 +12,6 @@ public interface AppointmentService {
     Appointment saveAppointment(Appointment appointment);
 
     void deleteAppointment(Long id);
+
+    Appointment fetchAppointment(Long id);
 }

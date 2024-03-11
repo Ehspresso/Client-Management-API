@@ -19,6 +19,11 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.fetchAllAppointments());
     }
 
+    @GetMapping("/appointments/{id}")
+    public ResponseEntity<Appointment> fetchAppointment(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(appointmentService.fetchAppointment(id));
+    }
+
     @PostMapping("/appointments")
     public Appointment saveAppointments(@RequestBody Appointment appointment) {
         return appointmentService.saveAppointment(appointment);
