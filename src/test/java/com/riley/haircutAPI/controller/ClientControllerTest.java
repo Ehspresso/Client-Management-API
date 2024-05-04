@@ -59,7 +59,7 @@ class ClientControllerTest {
                 .thenReturn(client);
 
         //act
-        ResultActions response = mockMvc.perform(post("/clients")
+        ResultActions response = mockMvc.perform(post("/api/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(client)));
 
@@ -84,7 +84,7 @@ class ClientControllerTest {
         when(service.fetchAllClients(1, 2)).thenReturn(clientResponse); //Must match ClientResponse because Service layer is mocked
 
         //act
-        ResultActions response = mockMvc.perform(get("/clients")
+        ResultActions response = mockMvc.perform(get("/api/clients")
                 .param("pageNo", "1")
                 .param("pageSize", "2")
                 .contentType(MediaType.APPLICATION_JSON));
