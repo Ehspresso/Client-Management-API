@@ -5,5 +5,6 @@ https://client-management-api-secondpush.onrender.com/swagger-ui/index.html
 
 The API communicates with a database to store client and appointment data. The database schema is defined by the following ER diagram:
 
-![publish-subscribe](https://github.com/Ehspresso/Client-Management-API/assets/144370752/512ef854-4dd1-4123-9a86-0d447ef65574)
+<img width="1037" alt="Screenshot 2024-05-06 at 5 15 33 PM" src="https://github.com/Ehspresso/Client-Management-API/assets/144370752/2ffc80e5-9c46-43b2-92f4-dcd21fcb9208">
+
 
